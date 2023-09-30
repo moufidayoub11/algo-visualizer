@@ -1,0 +1,2 @@
+export default class Utils{static sleep(t){return new Promise((e=>setTimeout(e,t)))}static manipulateClasses(t,e=[],s=[]){t.classList.add(...e),t.classList.remove(...s)}static weightedRandom(t){let e=1;for(let s=0;s<t.length;++s)e+=t[s][1];const s=Math.floor(Math.random()*e);e=0;for(let a=0;a<t.length;++a)if(e+=t[a][1],e>=s)return"obstacle"==t[a][0]}}
+//# sourceMappingURL=Utils.js.map

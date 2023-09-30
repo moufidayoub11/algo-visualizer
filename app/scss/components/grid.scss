@@ -1,0 +1,13 @@
+@use "../util" as *;
+
+.grid-container {
+    padding-inline: rem(5);
+    border-radius: rem(5);
+    padding-top: rem(1);
+    padding-bottom: rem(5);
+    width: 99%;
+
+    table {
+        border-collapse: collapse;
+    }
+}

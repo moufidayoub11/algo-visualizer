@@ -1,0 +1,75 @@
+@use "../util" as *;
+
+.line {
+    position: absolute;
+    background-color: red;
+    z-index: -1;
+}
+
+.node {
+    width: rem(25);
+    background-color: var(--ghost-white);
+    height: rem(25);
+    border: rem(1) solid hsl(206, 84%, 83%);
+    transition: all 0.3s ease-in-out;
+
+    &-start {
+        transition: all 0.5s ease-in;
+        background-image: url(../assets/triangletwo-right.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        animation-name: specialNodes;
+        animation-duration: 0.5s;
+        animation-timing-function: ease-out;
+        animation-delay: 0;
+        animation-direction: alternate;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+        animation-play-state: running;
+    }
+
+    &-finish {
+        transition: all 0.5s ease-in;
+        background-image: url(../assets/circle.svg);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        animation-name: specialNodes;
+        animation-duration: 0.5s;
+        animation-timing-function: ease-out;
+        animation-delay: 0;
+        animation-direction: alternate;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+        animation-play-state: running;
+    }
+
+    &-wall {
+        //transition: all 0.3s ease-in-out;
+        border-color: hsla(0, 1%, 16%, 0.774);
+        background-color: hsl(0, 0%, 20%) !important;
+        // background-position: center;
+        // background-repeat: no-repeat;
+        // background-size: contain;
+        // animation-name: specialNodes;
+        // animation-duration: 0.1s;
+        // animation-timing-function: ease-out;
+        // animation-delay: 0;
+        // animation-direction: alternate;
+        // animation-iteration-count: 1;
+        // animation-fill-mode: forwards;
+        // animation-play-state: running;
+    }
+
+    &-path {
+        animation-name: shortestPath;
+        animation-duration: 1s;
+        animation-timing-function: ease-out;
+        animation-delay: 0;
+        animation-direction: alternate;
+        animation-iteration-count: 1;
+        animation-fill-mode: forwards;
+        animation-play-state: running;
+    }
+}

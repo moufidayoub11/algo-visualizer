@@ -1,0 +1,84 @@
+@import "../util";
+
+// Navbar Styles
+.navbar {
+    width: 100%;
+    &__wrapper {
+        background-color: var(--darkest);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 11px 0px;
+        padding-block: rem(10);
+
+        /* Tablet */
+        @include breakpoint(medium) {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: rem(10);
+        }
+        /* Pc */
+        @include breakpoint(large) {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: rem(10);
+            background-color: var(--darkest);
+        }
+    }
+
+    &-title {
+        color: var(--lightest);
+    }
+
+    &-algorithm {
+        .select-wrapper {
+            position: relative;
+            display: inline-block;
+            &:after {
+                content: "\25BC";
+                position: absolute;
+                top: 50%;
+                right: rem(10);
+                transform: translateY(-50%);
+                pointer-events: none;
+                color: var(--lightest);
+            }
+
+            select {
+                font-size: rem(16);
+                appearance: none;
+                width: rem(200);
+                background: var(--darkest);
+                padding: rem(10);
+                color: var(--lightest);
+                border: rem(1) solid var(--light);
+                border-radius: rem(4);
+                cursor: pointer;
+            }
+        }
+    }
+
+    &-buttons {
+        button {
+            font-size: rem(15);
+            margin-left: rem(1);
+            padding: rem(10) rem(20);
+            color: var(--lightest);
+            background-color: var(--light);
+            border: none;
+            border-radius: rem(4);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: var(--medium);
+            }
+
+            &:first-child {
+                margin-left: 0;
+            }
+        }
+    }
+}

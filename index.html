@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title></title>
+	<link rel="stylesheet" href="/dist/style.css" />
+	<script type="module" src="/dist/script.js"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500&amp;display=swap" rel="stylesheet">
+</head>
+
+<body>
+	<div class="navbar">
+		<nav class="navbar__wrapper">
+			<div class="navbar-title">
+				<h1><strong></strong> AlgoVisualiser</h1>
+			</div>
+			<div class="navbar-algorithm">
+				<div class="select-wrapper">
+					<select id="algorithm-select">
+						<optgroup label="Pathfinding Algorithms">
+							<option value="dijkstra">Dijkstra</option>
+							<option value="astar">A Star</option>
+							<option value="dfs">Depth First Search</option>
+							<option value="bfs">Breadth First Search</option>
+						</optgroup>
+						<optgroup label="Cellular Automata">
+							<option value="gol">Game of Life</option>
+						</optgroup>
+					</select>
+
+				</div>
+			</div>
+			<div class="navbar-buttons">
+				<button class="navbar-buttons-visualize">Visualise!</button>
+				<button class="navbar-buttons-random">Randomize!</button>
+				<button class="navbar-buttons-clear">Clear!</button>
+			</div>
+		</nav>
+	</div>
+	<div class="grid-container">
+		<table>
+			<tbody id="grid"></tbody>
+		</table>
+	</div>
+</body>
+
+</html>
