@@ -1,1 +1,1 @@
-# algo-visualize
+# algo-visualizer
