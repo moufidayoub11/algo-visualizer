@@ -2,7 +2,6 @@
 
 .node {
     width: rem(25);
-    background-color: var(--ghost-white);
     height: rem(25);
     border: rem(1) solid hsl(206, 84%, 83%);
     transition: all 0.3s ease-in-out;
@@ -11,6 +10,7 @@
         transition: all 0.5s ease-in;
         background-image: url(../assets/triangletwo-right.svg);
         background-position: center;
+        background-repeat: no-repeat;
         background-size: contain;
         animation-name: specialNodes;
         animation-duration: 0.5s;
@@ -20,6 +20,7 @@
     &-finish {
         transition: all 0.5s ease-in;
         background-image: url(../assets/circle.svg);
+        background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
         animation-name: specialNodes;
@@ -30,6 +31,7 @@
     &-wall {
         border-color: hsla(0, 1%, 16%, 0.774);
         background-color: hsl(0, 0%, 20%) !important;
+        transition: all 0.5s ease-in-out;
     }
 
     &-path {
