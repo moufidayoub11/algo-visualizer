@@ -3,8 +3,9 @@
 .node {
     width: rem(25);
     height: rem(25);
-    border: rem(1) solid hsl(206, 84%, 83%);
+    border: rem(1) solid rgba(102, 126, 234, 0.3);
     transition: all 0.3s ease-in-out;
+    background-color: rgba(102, 126, 234, 0.05);
 
     &-start {
         transition: all 0.5s ease-in;
@@ -29,8 +30,8 @@
     }
 
     &-wall {
-        border-color: hsla(0, 1%, 16%, 0.774);
-        background-color: hsl(0, 0%, 20%) !important;
+        border-color: rgba(28, 13, 44, 0.6);
+        background-color: rgba(28, 13, 44, 0.8) !important;
         transition: all 0.5s ease-in-out;
     }
 
@@ -46,14 +47,14 @@
     }
 
     &-current {
-        background-color: rgba(255, 165, 0, 0.7) !important;
+        background-color: rgba(192, 132, 252, 0.8) !important;
         animation-name: currentPath;
         animation-duration: 0.5s;
         animation-timing-function: ease-in-out;
     }
 
     &-backtrack {
-        background-color: rgba(255, 0, 0, 0.5) !important;
+        background-color: rgba(239, 107, 107, 0.7) !important;
         animation-name: backtrack;
         animation-duration: 0.3s;
         animation-timing-function: ease-in-out;

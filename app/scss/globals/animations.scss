@@ -118,15 +118,15 @@
 
 // Animation classes for better performance
 .node-visited-animation {
-    animation: fadeInVisited 0.1s ease-out;
+    animation: fadeInVisited 0.02s ease-out;
 }
 
 .node-updated-animation {
-    animation: fadeInUpdated 0.08s ease-out;
+    animation: fadeInUpdated 0.02s ease-out;
 }
 
 .node-path-animation {
-    animation: pathReveal 0.15s ease-out;
+    animation: pathReveal 0.03s ease-out;
 }
 
 .node-wall-animation {
@@ -134,18 +134,18 @@
 }
 
 .node-remove-wall-animation {
-    animation: wallDisappear 0.1s ease-out;
+    animation: wallDisappear 0.05s ease-out;
 }
 
 .node-current-animation {
-    animation: currentPath 0.2s ease-in-out;
+    animation: currentPath 0.02s ease-in-out;
 }
 
 .node-backtrack-animation {
-    animation: backtrack 0.15s ease-in-out;
+    animation: backtrack 0.03s ease-in-out;
 }
 
 // Transition for smooth color changes
 .node {
-    transition: background-color 0.05s ease-out;
+    transition: background-color 0.01s ease-out;
 }

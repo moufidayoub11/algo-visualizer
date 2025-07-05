@@ -12,7 +12,7 @@ export default class GridAnimator {
         this.isPaused = false;
         this.currentStep = 0;
         this.steps = [];
-        this.animationSpeed = 30; // milliseconds between steps
+        this.animationSpeed = 10; // milliseconds between steps
         this.lastFrameTime = 0;
         this.animationFrameId = null;
         this.isActive = false;
@@ -201,12 +201,17 @@ export default class GridAnimator {
     showControlButtons() {
         const controlGroup = document.querySelector('.button-group.control-actions');
         const pauseBtn = document.querySelector('.navbar-buttons-pause');
+        const stepBackBtn = document.querySelector('.navbar-buttons-step-back');
+        const stepForwardBtn = document.querySelector('.navbar-buttons-step-forward');
         
+        // Enable the control group
         if (controlGroup) {
-            controlGroup.style.display = 'flex';
+            controlGroup.classList.remove('disabled');
         }
         
+        // Enable all control buttons
         if (pauseBtn) {
+            pauseBtn.disabled = false;
             const icon = pauseBtn.querySelector('i');
             if (icon) {
                 icon.setAttribute('data-lucide', 'pause');
@@ -216,12 +221,38 @@ export default class GridAnimator {
             }
             pauseBtn.title = 'Pause';
         }
+        
+        if (stepBackBtn) {
+            stepBackBtn.disabled = !this.canStepBack();
+        }
+        
+        if (stepForwardBtn) {
+            stepForwardBtn.disabled = !this.canStep();
+        }
     }
 
     hideControlButtons() {
         const controlGroup = document.querySelector('.button-group.control-actions');
+        const pauseBtn = document.querySelector('.navbar-buttons-pause');
+        const stepBackBtn = document.querySelector('.navbar-buttons-step-back');
+        const stepForwardBtn = document.querySelector('.navbar-buttons-step-forward');
+        
+        // Disable the control group
         if (controlGroup) {
-            controlGroup.style.display = 'none';
+            controlGroup.classList.add('disabled');
+        }
+        
+        // Disable all control buttons
+        if (pauseBtn) {
+            pauseBtn.disabled = true;
+        }
+        
+        if (stepBackBtn) {
+            stepBackBtn.disabled = true;
+        }
+        
+        if (stepForwardBtn) {
+            stepForwardBtn.disabled = true;
         }
     }
 
@@ -286,6 +317,7 @@ export default class GridAnimator {
         // Pause auto-playing when manually stepping
         this.isAutoPlaying = false;
         this.isPaused = true;
+        this.updateControlButtons();
         
         this.executeStep(this.currentStep);
         this.currentStep++;
@@ -302,6 +334,7 @@ export default class GridAnimator {
         // Pause auto-playing when manually stepping
         this.isAutoPlaying = false;
         this.isPaused = true;
+        this.updateControlButtons();
         
         this.currentStep--;
         this.undoStep(this.currentStep);
@@ -363,11 +396,11 @@ export default class GridAnimator {
     // Speed control methods
     setSpeed(speed) {
         const speedMap = {
-            'slow': 100,
-            'normal': 30,
-            'fast': 5
+            'slow': 50,     // Slower but not too slow - 50ms between steps
+            'normal': 8,    // Much faster normal - 8ms between steps  
+            'fast': 1       // Ultra fast - 1ms between steps (almost instant)
         };
-        this.animationSpeed = speedMap[speed] || 30;
+        this.animationSpeed = speedMap[speed] || 8;
     }
 
     setAnimationSpeed(speed) {

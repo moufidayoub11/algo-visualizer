@@ -4,18 +4,66 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title></title>
+	
+	<!-- Primary Meta Tags -->
+	<title>PathFinder Visualizer - Interactive Pathfinding Algorithm Visualization</title>
+	<meta name="title" content="PathFinder Visualizer - Interactive Pathfinding Algorithm Visualization" />
+	<meta name="description" content="Visualize pathfinding algorithms like A*, Dijkstra, BFS, and DFS in real-time. Interactive grid-based pathfinding visualization tool with maze generation and step-by-step algorithm exploration." />
+	<meta name="keywords" content="pathfinding, algorithm visualization, A*, Dijkstra, BFS, DFS, maze generation, graph algorithms, interactive learning, computer science, data structures" />
+	<meta name="author" content="PathFinder Visualizer" />
+	<meta name="robots" content="index, follow" />
+	
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="PathFinder Visualizer - Interactive Pathfinding Algorithm Visualization" />
+	<meta property="og:description" content="Visualize pathfinding algorithms like A*, Dijkstra, BFS, and DFS in real-time. Interactive grid-based pathfinding visualization tool with maze generation." />
+	<meta property="og:url" content="https://algo-visualizer-tau.vercel.app/" />
+	
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:title" content="PathFinder Visualizer - Interactive Pathfinding Algorithm Visualization" />
+	<meta property="twitter:description" content="Visualize pathfinding algorithms like A*, Dijkstra, BFS, and DFS in real-time. Interactive grid-based pathfinding visualization tool." />
+	
+	<link rel="canonical" href="https://algo-visualizer-tau.vercel.app/" />
+	
+	<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+	<link rel="icon" type="image/ico" href="/assets/favicon.ico" />
+	
 	<link rel="stylesheet" href="/dist/style.css" />
 	<script type="module" src="/dist/script.js"></script>
 	<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&amp;display=swap" rel="stylesheet">
 	<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "WebApplication",
+		"name": "PathFinder Visualizer",
+		"description": "Interactive pathfinding algorithm visualization tool supporting A*, Dijkstra, BFS, DFS algorithms with maze generation capabilities.",
+		"url": "https://algo-visualizer-tau.vercel.app/",
+		"applicationCategory": "EducationalApplication",
+		"operatingSystem": "Web Browser",
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD"
+		},
+		"featureList": [
+			"A* Search Algorithm Visualization",
+			"Dijkstra's Algorithm Visualization", 
+			"Breadth-First Search (BFS) Visualization",
+			"Depth-First Search (DFS) Visualization",
+			"Interactive Maze Generation",
+			"Step-by-step Algorithm Control",
+			"Real-time Pathfinding Animation"
+		]
+	}
+	</script>
 </head>
 
 <body>
 	<div class="navbar">
 		<nav class="navbar__wrapper">
 			<div class="navbar-title">
-				<h1><i data-lucide="activity"></i> AlgoVisualizer</h1>
+				<h1><i data-lucide="route"></i> PathFinder Visualizer</h1>
 			</div>
 			
 			<div class="navbar-controls">
@@ -23,12 +71,10 @@
 					<label class="control-label">Algorithm</label>
 					<div class="select-wrapper">
 						<select id="algorithm-select">
-							<optgroup label="Pathfinding Algorithms">
-								<option value="dijkstra">Dijkstra's Algorithm</option>
 								<option value="astar">A* Search</option>
+								<option value="dijkstra">Dijkstra's Algorithm</option>
 								<option value="dfs">Depth-First Search</option>
 								<option value="bfs">Breadth-First Search</option>
-							</optgroup>
 						</select>
 						<i data-lucide="chevron-down" class="select-icon"></i>
 					</div>
@@ -38,11 +84,9 @@
 					<label class="control-label">Maze Generator</label>
 					<div class="select-wrapper">
 						<select id="wall-algorithm-select">
-							<optgroup label="Maze Generation">
 								<option value="recursive-division">Recursive Division</option>
 								<option value="recursive-backtracking">Recursive Backtracking</option>
 								<option value="kruskals">Kruskal's Algorithm</option>
-							</optgroup>
 						</select>
 						<i data-lucide="chevron-down" class="select-icon"></i>
 					</div>
@@ -52,11 +96,9 @@
 					<label class="control-label">Speed</label>
 					<div class="select-wrapper">
 						<select id="animation-speed-select">
-							<optgroup label="Animation Speed">
 								<option value="slow">Slow</option>
 								<option value="normal" selected>Normal</option>
 								<option value="fast">Fast</option>
-							</optgroup>
 						</select>
 						<i data-lucide="chevron-down" class="select-icon"></i>
 					</div>
@@ -70,14 +112,14 @@
 					</button>
 				</div>
 				
-				<div class="button-group control-actions" style="display: none;">
-					<button class="btn btn-icon navbar-buttons-step-back" title="Step Back">
+				<div class="button-group control-actions">
+					<button class="btn btn-icon navbar-buttons-step-back" title="Step Back" disabled>
 						<i data-lucide="skip-back"></i>
 					</button>
-					<button class="btn btn-icon btn-play-pause navbar-buttons-pause" title="Pause">
+					<button class="btn btn-icon btn-play-pause navbar-buttons-pause" title="Pause" disabled>
 						<i data-lucide="pause"></i>
 					</button>
-					<button class="btn btn-icon navbar-buttons-step-forward" title="Step Forward">
+					<button class="btn btn-icon navbar-buttons-step-forward" title="Step Forward" disabled>
 						<i data-lucide="skip-forward"></i>
 					</button>
 				</div>

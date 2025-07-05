@@ -3,6 +3,7 @@
 // Modern Navbar Styles
 .navbar {
     width: 100%;
+    padding-block: rem(8);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     
@@ -11,7 +12,7 @@
         align-items: center;
         justify-content: space-between;
         padding: rem(12) rem(20);
-        max-width: 1400px;
+        max-width: 1600px;
         margin: 0 auto;
         gap: rem(20);
 
@@ -75,9 +76,9 @@
 
                 select {
                     appearance: none;
-                    background: rgba(255, 255, 255, 0.15);
+                    background: rgba(102, 126, 234, 0.25);
                     backdrop-filter: blur(10px);
-                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border: 1px solid rgba(102, 126, 234, 0.4);
                     border-radius: rem(8);
                     color: white;
                     font-size: rem(14);
@@ -88,20 +89,30 @@
                     transition: all 0.2s ease;
 
                     &:hover {
-                        background: rgba(255, 255, 255, 0.2);
-                        border-color: rgba(255, 255, 255, 0.3);
+                        background: rgba(102, 126, 234, 0.35);
+                        border-color: rgba(102, 126, 234, 0.6);
+                        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
                     }
 
                     &:focus {
                         outline: none;
-                        background: rgba(255, 255, 255, 0.25);
-                        border-color: rgba(255, 255, 255, 0.4);
-                        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+                        background: rgba(102, 126, 234, 0.4);
+                        border-color: rgba(102, 126, 234, 0.7);
+                        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
                     }
 
                     option {
-                        background: var(--darkest);
-                        color: var(--lightest);
+                        background: #432674;
+                        color: white;
+                        padding: rem(8);
+                    }
+
+                    optgroup {
+                        background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+                        color: white;
+                        font-weight: 600;
+                        font-style: normal;
+                        padding: rem(8) rem(12);
                     }
                 }
 
@@ -110,8 +121,9 @@
                     right: rem(12);
                     width: rem(16);
                     height: rem(16);
-                    color: rgba(255, 255, 255, 0.7);
+                    color: rgba(255, 255, 255, 0.9);
                     pointer-events: none;
+                    transition: color 0.2s ease;
                 }
             }
         }
@@ -133,11 +145,18 @@
             gap: rem(6);
 
             &.control-actions {
-                background: rgba(59, 130, 246, 0.2);
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(10px);
                 border-radius: rem(8);
                 padding: rem(4);
-                backdrop-filter: blur(10px);
                 border: 1px solid rgba(59, 130, 246, 0.3);
+                transition: all 0.3s ease;
+                
+                // Add disabled state for the entire group
+                &.disabled {
+                    opacity: 1;
+                    pointer-events: none;
+                }
             }
         }
 
@@ -146,7 +165,7 @@
             align-items: center;
             justify-content: center;
             gap: rem(6);
-            font-size: rem(14);
+            font-size: rem(15); // Increased from rem(14)
             font-weight: 500;
             border: none;
             border-radius: rem(6);
@@ -154,41 +173,63 @@
             transition: all 0.2s ease;
             text-decoration: none;
             white-space: nowrap;
+            height: rem(40); // Fixed height for consistency
+            min-width: rem(80); // Minimum width for consistency
 
             &:disabled {
                 opacity: 0.5;
                 cursor: not-allowed;
                 pointer-events: none;
+                transform: none !important;
+                box-shadow: none !important;
+                
+                // Smooth transition for disabled state
+                transition: all 0.3s ease;
             }
 
             // Icon buttons
             &.btn-icon {
-                width: rem(32);
+                width: rem(32); // Match the height for square buttons
                 height: rem(32);
                 padding: 0;
+                min-width: rem(32); // Override the general min-width
                 
                 i {
-                    width: rem(16);
-                    height: rem(16);
+                    width: rem(18); // Slightly larger icons
+                    height: rem(18);
                 }
             }
 
             // Primary button
             &.btn-primary {
-                background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+                background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
                 color: white;
-                padding: rem(10) rem(16);
+                padding: rem(0) rem(20); // Use consistent horizontal padding
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                min-width: rem(110); // Fixed width to prevent layout shifts
 
                 &:hover:not(:disabled) {
-                    background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+                    background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
                     transform: translateY(-1px);
                     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
                 }
 
-                i {
-                    width: rem(18);
-                    height: rem(18);
+            }
+
+            // Stop button state using palette colors that harmonize with header
+            &.btn-stop {
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+                color: white;
+                padding: rem(0) rem(20); // Use consistent horizontal padding
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                min-width: rem(110); // Fixed width to prevent layout shifts
+
+                &:hover:not(:disabled) {
+                    background: linear-gradient(135deg, #ee5a52 0%, #e03131 100%);
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
                 }
             }
 
@@ -198,7 +239,8 @@
                 backdrop-filter: blur(10px);
                 color: white;
                 border: 1px solid rgba(255, 255, 255, 0.2);
-                padding: rem(8) rem(12);
+                padding: rem(0) rem(16); // Use consistent horizontal padding
+                min-width: rem(90); // Consistent minimum width
 
                 &:hover:not(:disabled) {
                     background: rgba(255, 255, 255, 0.25);
@@ -206,28 +248,47 @@
                 }
 
                 i {
-                    width: rem(16);
-                    height: rem(16);
+                    width: rem(18); // Larger icons for consistency
+                    height: rem(18);
                 }
             }
 
             // Control action buttons (in the control group)
             .control-actions & {
                 background: transparent;
-                color: white;
+                color: rgba(28, 13, 44, 0.8);
                 border: none;
 
                 &:hover:not(:disabled) {
                     background: rgba(59, 130, 246, 0.4);
+                    color: white;
                 }
 
                 &.btn-play-pause {
                     background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+                    color: white;
                     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
                     &:hover:not(:disabled) {
                         background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
                     }
+                }
+
+                &:disabled {
+                    color: rgba(28, 13, 44, 0.3);
+                }
+            }
+
+            // Smooth text transitions for dynamic content
+            span {
+                transition: opacity 0.2s ease;
+                display: inline-block;
+            }
+            
+            // Enhanced transitions for state changes
+            &.btn-primary, &.btn-stop {
+                span {
+                    transition: opacity 0.15s ease;
                 }
             }
         }

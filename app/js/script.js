@@ -39,24 +39,44 @@ document.addEventListener("DOMContentLoaded", async () => {
         const visualizeText = visualizeButton.querySelector('span');
         
         if (globalState) {
-            if (visualizeText) visualizeText.textContent = "Stop";
+            // Smooth transition to Stop state
+            const visualizeSpan = visualizeButton.querySelector('span');
+            if (visualizeSpan) {
+                visualizeSpan.style.opacity = '0';
+                setTimeout(() => {
+                    visualizeSpan.textContent = "Stop";
+                    visualizeSpan.style.opacity = '1';
+                }, 150);
+            }
             if (visualizeIcon) {
                 visualizeIcon.setAttribute('data-lucide', 'square');
                 if (typeof lucide !== 'undefined') {
                     lucide.createIcons();
                 }
             }
-            visualizeButton.style.background = "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)";
+            // Use CSS classes instead of inline styles
+            visualizeButton.classList.remove('btn-primary');
+            visualizeButton.classList.add('btn-stop');
             grid.gridAnimator.showControlButtons();
         } else {
-            if (visualizeText) visualizeText.textContent = "Visualize";
+            // Smooth transition to Visualize state
+            const visualizeSpan = visualizeButton.querySelector('span');
+            if (visualizeSpan) {
+                visualizeSpan.style.opacity = '0';
+                setTimeout(() => {
+                    visualizeSpan.textContent = "Visualize";
+                    visualizeSpan.style.opacity = '1';
+                }, 150);
+            }
             if (visualizeIcon) {
                 visualizeIcon.setAttribute('data-lucide', 'play');
                 if (typeof lucide !== 'undefined') {
                     lucide.createIcons();
                 }
             }
-            visualizeButton.style.background = "";
+            // Use CSS classes instead of inline styles
+            visualizeButton.classList.remove('btn-stop');
+            visualizeButton.classList.add('btn-primary');
             grid.gridAnimator.hideControlButtons();
         }
     }
