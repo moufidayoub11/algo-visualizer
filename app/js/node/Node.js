@@ -33,7 +33,6 @@ export default class Node {
 
         /** @type {number} */
         this.f = Infinity;
-
         
         /** @type {number} */
         this.h = Infinity;

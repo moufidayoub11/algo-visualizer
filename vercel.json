@@ -3,7 +3,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".",
   "installCommand": "npm install",
-  "functions": {},
   "routes": [
     {
       "src": "/dist/(.*)",

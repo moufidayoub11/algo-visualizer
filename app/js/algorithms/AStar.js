@@ -21,7 +21,8 @@ export default class Astar extends Algorithm {
         // Initialize start node
         this.startNode.distance = 0;
         this.startNode.g = 0;
-        this.startNode.f = this.heuristic(this.startNode, this.finishNode);
+        const startH = this.heuristic(this.startNode, this.finishNode);
+        this.startNode.f = this.startNode.g + startH;
         this.startNode.in_open_set = true;
 
         // Open set contains only unvisited nodes to be evaluated
@@ -35,22 +36,22 @@ export default class Astar extends Algorithm {
             // Remove from open set
             current.in_open_set = false;
             
-            // Add to closed set (mark as visited)
-            current.is_visited = true;
-            
             let currentIndex = this.get_1d_index(current.row, current.col);
             
-            // Skip walls
-            if (current.is_wall) continue;
+            // Check if we reached the goal
+            if (current === this.finishNode) break;
+            
+            // Skip walls and already visited nodes
+            if (current.is_wall || current.is_visited) continue;
+            
+            // Add to closed set (mark as visited)
+            current.is_visited = true;
 
             // Add visualization step
             this.steps.push({
                 type: "visited",
                 indices: [currentIndex],
             });
-
-            // Check if we reached the goal
-            if (current === this.finishNode) break;
 
             // Update neighbors
             this.updateNeighbors(current);
@@ -74,9 +75,9 @@ export default class Astar extends Algorithm {
     }
 
     heuristic(node1, node2) {
-        return (
-            Math.abs(node1.row - node2.row) + Math.abs(node1.col - node2.col)
-        );
+        // Manhattan distance heuristic with slight emphasis to show A* behavior
+        const manhattanDistance = Math.abs(node1.row - node2.row) + Math.abs(node1.col - node2.col);
+        return manhattanDistance * 1.05; // Very slight emphasis on heuristic to make A* more goal-directed
     }
 
     aStarGetPath(current = this.finishNode) {
@@ -140,6 +141,15 @@ export default class Astar extends Algorithm {
     }
 
     sortByHeuristic(nodes) {
-        nodes.sort((node1, node2) => node1.f - node2.f);
+        nodes.sort((node1, node2) => {
+            // Primary sort by f-score (g + h)
+            if (node1.f !== node2.f) {
+                return node1.f - node2.f;
+            }
+            // Tie-breaker: prefer nodes closer to goal (lower h)
+            const h1 = this.heuristic(node1, this.finishNode);
+            const h2 = this.heuristic(node2, this.finishNode);
+            return h1 - h2;
+        });
     }
 }
