@@ -7,35 +7,92 @@
 	<title></title>
 	<link rel="stylesheet" href="/dist/style.css" />
 	<script type="module" src="/dist/script.js"></script>
-	<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500&amp;display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&amp;display=swap" rel="stylesheet">
+	<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 
 <body>
 	<div class="navbar">
 		<nav class="navbar__wrapper">
 			<div class="navbar-title">
-				<h1><strong></strong> AlgoVisualiser</h1>
+				<h1><i data-lucide="activity"></i> AlgoVisualizer</h1>
 			</div>
-			<div class="navbar-algorithm">
-				<div class="select-wrapper">
-					<select id="algorithm-select">
-						<optgroup label="Pathfinding Algorithms">
-							<option value="dijkstra">Dijkstra</option>
-							<option value="astar">A Star</option>
-							<option value="dfs">Depth First Search</option>
-							<option value="bfs">Breadth First Search</option>
-						</optgroup>
-						<optgroup label="Cellular Automata">
-							<option value="gol">Game of Life</option>
-						</optgroup>
-					</select>
-
+			
+			<div class="navbar-controls">
+				<div class="control-group">
+					<label class="control-label">Algorithm</label>
+					<div class="select-wrapper">
+						<select id="algorithm-select">
+							<optgroup label="Pathfinding Algorithms">
+								<option value="dijkstra">Dijkstra's Algorithm</option>
+								<option value="astar">A* Search</option>
+								<option value="dfs">Depth-First Search</option>
+								<option value="bfs">Breadth-First Search</option>
+							</optgroup>
+						</select>
+						<i data-lucide="chevron-down" class="select-icon"></i>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label">Maze Generator</label>
+					<div class="select-wrapper">
+						<select id="wall-algorithm-select">
+							<optgroup label="Maze Generation">
+								<option value="recursive-division">Recursive Division</option>
+								<option value="recursive-backtracking">Recursive Backtracking</option>
+								<option value="kruskals">Kruskal's Algorithm</option>
+							</optgroup>
+						</select>
+						<i data-lucide="chevron-down" class="select-icon"></i>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label">Speed</label>
+					<div class="select-wrapper">
+						<select id="animation-speed-select">
+							<optgroup label="Animation Speed">
+								<option value="slow">Slow</option>
+								<option value="normal" selected>Normal</option>
+								<option value="fast">Fast</option>
+							</optgroup>
+						</select>
+						<i data-lucide="chevron-down" class="select-icon"></i>
+					</div>
 				</div>
 			</div>
-			<div class="navbar-buttons">
-				<button class="navbar-buttons-visualize">Visualise!</button>
-				<button class="navbar-buttons-random">Randomize!</button>
-				<button class="navbar-buttons-clear">Clear!</button>
+			
+			<div class="navbar-actions">
+				<div class="button-group primary-actions">
+					<button class="btn btn-primary navbar-buttons-visualize">
+						<i data-lucide="play"></i>
+						<span>Visualize</span>
+					</button>
+				</div>
+				
+				<div class="button-group control-actions" style="display: none;">
+					<button class="btn btn-icon navbar-buttons-step-back" title="Step Back">
+						<i data-lucide="skip-back"></i>
+					</button>
+					<button class="btn btn-icon btn-play-pause navbar-buttons-pause" title="Pause">
+						<i data-lucide="pause"></i>
+					</button>
+					<button class="btn btn-icon navbar-buttons-step-forward" title="Step Forward">
+						<i data-lucide="skip-forward"></i>
+					</button>
+				</div>
+				
+				<div class="button-group utility-actions">
+					<button class="btn btn-secondary navbar-buttons-random" title="Generate Random Maze">
+						<i data-lucide="shuffle"></i>
+						<span>Random</span>
+					</button>
+					<button class="btn btn-secondary navbar-buttons-clear" title="Clear Grid">
+						<i data-lucide="eraser"></i>
+						<span>Clear</span>
+					</button>
+				</div>
 			</div>
 		</nav>
 	</div>
@@ -44,6 +101,13 @@
 			<tbody id="grid"></tbody>
 		</table>
 	</div>
+	
+	<script>
+		// Initialize Lucide icons
+		if (typeof lucide !== 'undefined') {
+			lucide.createIcons();
+		}
+	</script>
 </body>
 
 </html>

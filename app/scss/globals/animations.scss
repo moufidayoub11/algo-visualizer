@@ -27,3 +27,125 @@
         background-color: rgb(255, 254, 106);
     }
 }
+
+@keyframes currentPath {
+    0% {
+        transform: scale(0.8);
+        background-color: rgba(255, 165, 0, 0.3);
+    }
+    50% {
+        transform: scale(1.1);
+        background-color: rgba(255, 165, 0, 0.9);
+    }
+    100% {
+        transform: scale(1);
+        background-color: rgba(255, 165, 0, 0.7);
+    }
+}
+
+@keyframes backtrack {
+    0% {
+        transform: scale(1);
+        background-color: rgba(255, 0, 0, 0.7);
+    }
+    50% {
+        transform: scale(0.9);
+        background-color: rgba(255, 0, 0, 0.3);
+    }
+    100% {
+        transform: scale(1);
+        background-color: transparent;
+    }
+}
+
+// Smooth fade-in animations for better performance
+@keyframes fadeInVisited {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInUpdated {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pathReveal {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes wallAppear {
+    0% {
+        transform: scale(0.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes wallDisappear {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.1);
+        opacity: 0;
+    }
+}
+
+// Animation classes for better performance
+.node-visited-animation {
+    animation: fadeInVisited 0.1s ease-out;
+}
+
+.node-updated-animation {
+    animation: fadeInUpdated 0.08s ease-out;
+}
+
+.node-path-animation {
+    animation: pathReveal 0.15s ease-out;
+}
+
+.node-wall-animation {
+    animation: wallAppear 0.05s ease-out;
+}
+
+.node-remove-wall-animation {
+    animation: wallDisappear 0.1s ease-out;
+}
+
+.node-current-animation {
+    animation: currentPath 0.2s ease-in-out;
+}
+
+.node-backtrack-animation {
+    animation: backtrack 0.15s ease-in-out;
+}
+
+// Transition for smooth color changes
+.node {
+    transition: background-color 0.05s ease-out;
+}

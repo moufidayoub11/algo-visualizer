@@ -34,6 +34,12 @@ export default class Node {
         /** @type {number} */
         this.f = Infinity;
 
+        /** @type {number} */
+        this.g = Infinity;
+
+        /** @type {boolean} */
+        this.in_open_set = false;
+
         /** @type {Node|null} */
         this.prev = null;
     }

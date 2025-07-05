@@ -46,7 +46,16 @@ export default class GridManager {
         await this.gridCreator.addRandomWalls();
     }
 
-    async clearGrid() {
-        await this.gridCreator.clearGrid();
+    clearGrid() {
+        this.gridAnimator.reset();
+        this.gridCreator.clearGrid();
+    }
+
+    setAnimationSpeed(speed) {
+        this.gridAnimator.setSpeed(speed);
+    }
+
+    setWallAnimationSpeed(speed) {
+        this.gridCreator.setWallAnimationSpeed(speed);
     }
 }

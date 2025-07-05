@@ -5,46 +5,55 @@ export default class Astar extends Algorithm {
     /**@param {Node[]} nodes  */
     constructor(nodes) {
         super(nodes);
-
-        this.rows = this.stateManager.getRows();
-        this.cols = this.stateManager.getCols();
-        this.startNode = nodes.find((node) => node.is_start);
-        this.finishNode = nodes.find((node) => node.is_finish);
-        this.get_1d_index = (row, col) => row * this.cols + col;
     }
 
     solve() {
+        // Initialize all nodes
         this.nodes.forEach((node) => {
             node.distance = Infinity;
             node.f = Infinity;
+            node.g = Infinity;
             node.is_visited = false;
+            node.in_open_set = false;
             node.prev = null;
         });
 
+        // Initialize start node
         this.startNode.distance = 0;
+        this.startNode.g = 0;
         this.startNode.f = this.heuristic(this.startNode, this.finishNode);
+        this.startNode.in_open_set = true;
 
-        this.openSet = this.nodes.slice();
+        // Open set contains only unvisited nodes to be evaluated
+        this.openSet = [this.startNode];
 
-        while (!!this.openSet.length) {
+        while (this.openSet.length > 0) {
+            // Find node with lowest f score
             this.sortByHeuristic(this.openSet);
-            let closest = this.openSet.shift();
-            if (closest == this.finishNode) break;
+            let current = this.openSet.shift();
+            
+            // Remove from open set
+            current.in_open_set = false;
+            
+            // Add to closed set (mark as visited)
+            current.is_visited = true;
+            
+            let currentIndex = this.get_1d_index(current.row, current.col);
+            
+            // Skip walls
+            if (current.is_wall) continue;
 
-            let closestIndex = this.get_1d_index(closest.row, closest.col);
-
-            if (closest.is_visited) continue;
-            if (closest.is_wall) continue;
-
-            if (closest.distance == Infinity) break;
-
-            closest.is_visited = true;
+            // Add visualization step
             this.steps.push({
                 type: "visited",
-                indices: [closestIndex],
+                indices: [currentIndex],
             });
 
-            this.updateNeighbors(closest);
+            // Check if we reached the goal
+            if (current === this.finishNode) break;
+
+            // Update neighbors
+            this.updateNeighbors(current);
         }
 
         this.steps.push({
@@ -52,10 +61,13 @@ export default class Astar extends Algorithm {
             indices: this.aStarGetPath(),
         });
 
+        // Clean up node properties
         this.nodes.forEach((node) => {
             node.distance = Infinity;
             node.f = Infinity;
+            node.g = Infinity;
             node.is_visited = false;
+            node.in_open_set = false;
             node.prev = null;
         });
         return this.steps;
@@ -82,14 +94,27 @@ export default class Astar extends Algorithm {
         const neighbors = this.getNeighbors(node);
 
         for (const neighbor of neighbors) {
-            const tentativeDistance = node.distance + 1;
-            const tentativeHeuristic =
-                tentativeDistance + this.heuristic(neighbor, this.finishNode);
-            if (tentativeHeuristic < neighbor.f) {
+            // Skip walls and visited nodes
+            if (neighbor.is_wall || neighbor.is_visited) continue;
+            
+            // Calculate tentative g score
+            const tentativeG = node.g + 1;
+            
+            // If this path to neighbor is better than any previous one
+            if (tentativeG < neighbor.g) {
                 const index = this.get_1d_index(neighbor.row, neighbor.col);
-                neighbor.distance = tentativeDistance;
+                
+                // Update neighbor
                 neighbor.prev = node;
-                neighbor.f = tentativeHeuristic;
+                neighbor.g = tentativeG;
+                neighbor.distance = tentativeG; // Keep for compatibility
+                neighbor.f = tentativeG + this.heuristic(neighbor, this.finishNode);
+
+                // Add to open set if not already there
+                if (!neighbor.in_open_set) {
+                    neighbor.in_open_set = true;
+                    this.openSet.push(neighbor);
+                }
 
                 this.steps.push({ type: "updated", indices: [index] });
             }
@@ -111,7 +136,7 @@ export default class Astar extends Algorithm {
         if (col < cols - 1)
             neighbors.push(this.nodes[this.get_1d_index(row, col + 1)]);
 
-        return neighbors.filter((neighbor) => !neighbor.is_visited);
+        return neighbors; // Return all neighbors, filtering happens in updateNeighbors
     }
 
     sortByHeuristic(nodes) {

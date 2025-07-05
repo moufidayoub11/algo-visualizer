@@ -1,83 +1,270 @@
 @import "../util";
 
-// Navbar Styles
+// Modern Navbar Styles
 .navbar {
     width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    
     &__wrapper {
-        background-color: var(--darkest);
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 11px 0px;
-        padding-block: rem(10);
+        justify-content: space-between;
+        padding: rem(12) rem(20);
+        max-width: 1400px;
+        margin: 0 auto;
+        gap: rem(20);
 
-        /* Tablet */
-        @include breakpoint(medium) {
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            padding: rem(10);
-        }
-        /* Pc */
-        @include breakpoint(large) {
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            padding: rem(10);
-            background-color: var(--darkest);
+        @include breakpoint-down(medium) {
+            flex-direction: column;
+            gap: rem(16);
+            padding: rem(16);
         }
     }
 
     &-title {
-        color: var(--lightest);
-    }
-
-    &-algorithm {
-        .select-wrapper {
-            position: relative;
-            display: inline-block;
-            &:after {
-                content: "\25BC";
-                position: absolute;
-                top: 50%;
-                right: rem(10);
-                transform: translateY(-50%);
-                pointer-events: none;
-                color: var(--lightest);
+        h1 {
+            color: white;
+            font-size: rem(24);
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: rem(8);
+            
+            i {
+                width: rem(28);
+                height: rem(28);
             }
 
-            select {
-                font-size: rem(16);
-                appearance: none;
-                width: rem(200);
-                background: var(--darkest);
-                padding: rem(10);
-                color: var(--lightest);
-                border: rem(1) solid var(--light);
-                border-radius: rem(4);
-                cursor: pointer;
+            @include breakpoint-down(medium) {
+                font-size: rem(20);
             }
         }
     }
 
-    &-buttons {
-        button {
-            font-size: rem(15);
-            margin-left: rem(1);
-            padding: rem(10) rem(20);
-            color: var(--lightest);
-            background-color: var(--light);
-            border: none;
-            border-radius: rem(4);
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+    &-controls {
+        display: flex;
+        align-items: center;
+        gap: rem(20);
+        flex-wrap: wrap;
 
-            &:hover {
-                background-color: var(--medium);
+        @include breakpoint-down(medium) {
+            justify-content: center;
+            gap: rem(12);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: rem(4);
+
+            .control-label {
+                font-size: rem(12);
+                font-weight: 500;
+                color: rgba(255, 255, 255, 0.8);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: rem(2);
             }
 
-            &:first-child {
-                margin-left: 0;
+            .select-wrapper {
+                position: relative;
+                display: flex;
+                align-items: center;
+
+                select {
+                    appearance: none;
+                    background: rgba(255, 255, 255, 0.15);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border-radius: rem(8);
+                    color: white;
+                    font-size: rem(14);
+                    font-weight: 500;
+                    padding: rem(10) rem(40) rem(10) rem(12);
+                    min-width: rem(160);
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+
+                    &:hover {
+                        background: rgba(255, 255, 255, 0.2);
+                        border-color: rgba(255, 255, 255, 0.3);
+                    }
+
+                    &:focus {
+                        outline: none;
+                        background: rgba(255, 255, 255, 0.25);
+                        border-color: rgba(255, 255, 255, 0.4);
+                        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+                    }
+
+                    option {
+                        background: var(--darkest);
+                        color: var(--lightest);
+                    }
+                }
+
+                .select-icon {
+                    position: absolute;
+                    right: rem(12);
+                    width: rem(16);
+                    height: rem(16);
+                    color: rgba(255, 255, 255, 0.7);
+                    pointer-events: none;
+                }
+            }
+        }
+    }
+
+    &-actions {
+        display: flex;
+        align-items: center;
+        gap: rem(12);
+
+        @include breakpoint-down(medium) {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .button-group {
+            display: flex;
+            align-items: center;
+            gap: rem(6);
+
+            &.control-actions {
+                background: rgba(59, 130, 246, 0.2);
+                border-radius: rem(8);
+                padding: rem(4);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(59, 130, 246, 0.3);
+            }
+
+            &.primary-actions {
+                margin-right: rem(8);
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: rem(6);
+            font-size: rem(14);
+            font-weight: 500;
+            border: none;
+            border-radius: rem(6);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            white-space: nowrap;
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+
+            // Icon buttons
+            &.btn-icon {
+                width: rem(32);
+                height: rem(32);
+                padding: 0;
+                
+                i {
+                    width: rem(16);
+                    height: rem(16);
+                }
+            }
+
+            // Primary button
+            &.btn-primary {
+                background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+                color: white;
+                padding: rem(10) rem(16);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+                &:hover:not(:disabled) {
+                    background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+                }
+
+                i {
+                    width: rem(18);
+                    height: rem(18);
+                }
+            }
+
+            // Secondary buttons
+            &.btn-secondary {
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(10px);
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                padding: rem(8) rem(12);
+
+                &:hover:not(:disabled) {
+                    background: rgba(255, 255, 255, 0.25);
+                    border-color: rgba(255, 255, 255, 0.3);
+                }
+
+                i {
+                    width: rem(16);
+                    height: rem(16);
+                }
+            }
+
+            // Control action buttons (in the control group)
+            .control-actions & {
+                background: transparent;
+                color: white;
+                border: none;
+
+                &:hover:not(:disabled) {
+                    background: rgba(59, 130, 246, 0.4);
+                }
+
+                &.btn-play-pause {
+                    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+                    &:hover:not(:disabled) {
+                        background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Responsive adjustments
+@include breakpoint-down(small) {
+    .navbar {
+        &__wrapper {
+            padding: rem(12);
+        }
+
+        &-controls {
+            .control-group {
+                .select-wrapper select {
+                    min-width: rem(140);
+                    font-size: rem(13);
+                }
+            }
+        }
+
+        &-actions {
+            .btn {
+                font-size: rem(13);
+                
+                &.btn-primary {
+                    padding: rem(8) rem(14);
+                }
+                
+                &.btn-secondary {
+                    padding: rem(6) rem(10);
+                }
             }
         }
     }

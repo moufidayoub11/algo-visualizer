@@ -4,11 +4,6 @@ import Algorithm from "./Algorithm.js";
 export default class BreadthFirstSearch extends Algorithm {
     constructor(nodes) {
         super(nodes);
-        this.rows = this.stateManager.getRows();
-        this.cols = this.stateManager.getCols();
-        this.startNode = nodes.find((node) => node.is_start);
-        this.finishNode = nodes.find((node) => node.is_finish);
-        this.get_1d_index = (row, col) => row * this.cols + col;
     }
 
     solve() {

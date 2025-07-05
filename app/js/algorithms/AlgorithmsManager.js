@@ -3,7 +3,6 @@ import Node from "../node/Node.js";
 import Astar from "./AStar.js";
 import DepthFirstSearch from "./dfs.js";
 import BreadthFirstSearch from "./bfs.js";
-import GameOfLife from "./GameOfLife.js";
 
 export default class AlgorithmsManager {
     /**@param {Node[]} nodes  */
@@ -33,11 +32,5 @@ export default class AlgorithmsManager {
         const bfs = new BreadthFirstSearch(this.nodes);
 
         return bfs.solve();
-    }
-
-    gol() {
-        const gol = new GameOfLife(this.nodes);
-
-        return gol.solve();
     }
 }

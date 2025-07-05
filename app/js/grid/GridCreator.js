@@ -1,6 +1,7 @@
 import StateManager from "../StateManager.js";
 import Node from "../node/Node.js";
 import Utils from "../utils/Utils.js";
+import WallGenerator from "../walls/WallGenerator.js";
 
 const VISITED_COLOR = "rgba(0, 0, 66, 0.75)";
 const CLOSED_COLOR = "rgba(0, 190, 218, 0.75)";
@@ -30,6 +31,10 @@ export default class GridCreator {
         this.currently_moving = null;
         /** @type {HTMLElement|null} */
         this.last_hoverd_node = null;
+
+        // Track wall generation state and timeouts for cancellation
+        this.wallGenerationTimeouts = [];
+        this.isGeneratingWalls = false;
     }
 
     /**
@@ -98,21 +103,95 @@ export default class GridCreator {
     }
 
     async addRandomWalls() {
-        await this.clearGrid();
-        let weights = [
-            ["obstacle", 30],
-            ["nonobstacle", 100],
-        ];
-        for (let i = 0; i < this.cols * this.rows; i++) {
-            const node = this.nodes[i];
-            const nodeElement = this.nodesElements[i];
-            if (node.is_start || node.is_finish) continue;
+        this.clearGrid();
+        this.isGeneratingWalls = true;
+        
+        // Get the selected wall algorithm from the dropdown
+        const wallAlgorithmSelect = document.getElementById('wall-algorithm-select');
+        const selectedAlgorithm = wallAlgorithmSelect ? wallAlgorithmSelect.value : 'random';
+        
+        // Generate walls using the selected algorithm
+        const wallGenerator = new WallGenerator(this.nodes, this.rows, this.cols);
+        const wallIndices = wallGenerator.generateWalls(selectedAlgorithm);
+        
+        // Use a simpler approach for wall generation that's more stable with speed changes
+        this.animateWallsSequentially(wallIndices, 0);
+    }
 
-            let decision = Utils.weightedRandom(weights);
-            if (decision) {
+    animateWallsSequentially(wallIndices, currentIndex) {
+        if (!this.isGeneratingWalls || currentIndex >= wallIndices.length) {
+            // Animation completed or cancelled
+            this.isGeneratingWalls = false;
+            this.wallGenerationTimeouts = [];
+            return;
+        }
+        
+        // Get current speed settings for this batch
+        const config = this.getWallAnimationConfig();
+        const batchEnd = Math.min(currentIndex + config.batchSize, wallIndices.length);
+        
+        // Process current batch
+        requestAnimationFrame(() => {
+            if (!this.isGeneratingWalls) return;
+            
+            for (let i = currentIndex; i < batchEnd; i++) {
+                const index = wallIndices[i];
+                const node = this.nodes[index];
+                const nodeElement = this.nodesElements[index];
+                
                 node.is_wall = true;
-                Utils.manipulateClasses(nodeElement, ["node-wall"]);
+                nodeElement.classList.add("node-wall");
+                // Add animation class based on frequency
+                if ((i - currentIndex) % config.animationFrequency === 0) {
+                    nodeElement.classList.add("node-wall-animation");
+                }
             }
+            
+            // Schedule next batch - get fresh config for delay
+            const timeoutId = setTimeout(() => {
+                this.animateWallsSequentially(wallIndices, batchEnd);
+            }, config.batchDelay);
+            
+            this.wallGenerationTimeouts.push(timeoutId);
+        });
+    }
+
+    stopWallGeneration() {
+        this.isGeneratingWalls = false;
+        // Clear all pending timeouts
+        this.wallGenerationTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+        this.wallGenerationTimeouts = [];
+    }
+
+    getWallAnimationConfig() {
+        // Read speed from StateManager for real-time updates
+        const speed = this.stateManager.getAnimationSpeed();
+        
+        switch (speed) {
+            case 'slow':
+                return {
+                    batchSize: 2,
+                    batchDelay: 120,
+                    animationFrequency: 1  // Animate every wall
+                };
+            case 'normal':
+                return {
+                    batchSize: 10,
+                    batchDelay: 40,
+                    animationFrequency: 2  // Animate every 2nd wall
+                };
+            case 'fast':
+                return {
+                    batchSize: 50,
+                    batchDelay: 8,
+                    animationFrequency: 5  // Animate every 5th wall
+                };
+            default:
+                return {
+                    batchSize: 10,
+                    batchDelay: 40,
+                    animationFrequency: 2
+                };
         }
     }
 
@@ -128,47 +207,32 @@ export default class GridCreator {
         const finishNodeEl =
             this.nodesElements[finishNode.row * this.cols + finishNode.col];
 
-        startNodeEl.classList.toggle("node-start", !["gol"].includes(newAlgo));
-        finishNodeEl.classList.toggle(
-            "node-finish",
-            !["gol"].includes(newAlgo)
-        );
+        startNodeEl.classList.add("node-start");
+        finishNodeEl.classList.add("node-finish");
 
         console.log(newAlgo);
         console.log(currentAlgo);
-
-        if (["gol"].includes(currentAlgo) && !["gol"].includes(newAlgo)) {
-            this.clearGrid();
-        }
     }
     /**
      * clear all walls
      */
-    async clearGrid() {
+    clearGrid() {
         if (this.stateManager.getState()) return;
-        this.stateManager.setState(true);
-
+        
+        // Stop any ongoing wall generation
+        this.stopWallGeneration();
+        
         this.clearPaths();
 
-        let wallPromises = [];
+        // Remove all walls instantly without animation
         for (let i = 0; i < this.nodes.length; i++) {
             const node = this.nodes[i];
             const nodeElement = this.nodesElements[i];
-            if (!node.is_wall && !nodeElement.classList.contains("node-wall"))
-                continue;
-            console.log("found wall");
-            node.is_wall = false;
-            let classList = nodeElement.classList;
-
-            wallPromises.push(
-                Utils.sleep(Math.floor(i)).then(() => {
-                    classList.remove("node-wall");
-                })
-            );
+            if (node.is_wall) {
+                node.is_wall = false;
+                nodeElement.classList.remove("node-wall", "node-wall-animation");
+            }
         }
-        await Promise.all(wallPromises);
-
-        this.stateManager.setState(false);
     }
 
     clearPaths() {
@@ -176,14 +240,16 @@ export default class GridCreator {
 
         for (let i = 0; i < this.nodes.length; i++) {
             const nodeElement = this.nodesElements[i];
-            if (
-                [VISITED_COLOR, CLOSED_COLOR].includes(
-                    nodeElement.style.backgroundColor
-                )
-            ) {
-                nodeElement.style.backgroundColor = "var(--ghost-white)";
+            // Check if the element has visited or updated colors and reset them
+            const bgColor = nodeElement.style.backgroundColor;
+            if (bgColor && (bgColor.includes("0, 0, 66") || bgColor.includes("0, 190, 218"))) {
+                nodeElement.style.backgroundColor = "";
             }
-            nodeElement.classList.remove("node-path");
+            // Remove path classes
+            nodeElement.classList.remove("node-path", "node-path-animation", 
+                "node-visited-animation", "node-updated-animation", 
+                "node-current", "node-current-animation", 
+                "node-backtrack", "node-backtrack-animation");
         }
     }
 

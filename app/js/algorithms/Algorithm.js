@@ -6,6 +6,11 @@ export default class Algorithm {
     constructor(nodes) {
         this.stateManager = new StateManager();
         this.nodes = nodes;
+        this.rows = this.stateManager.getRows();
+        this.cols = this.stateManager.getCols();
+        this.startNode = nodes.find((node) => node.is_start);
+        this.finishNode = nodes.find((node) => node.is_finish);
+        this.get_1d_index = (row, col) => row * this.cols + col;
         this.steps = [];
     }
 

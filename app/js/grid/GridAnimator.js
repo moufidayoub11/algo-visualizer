@@ -8,118 +8,406 @@ const CLOSED_COLOR = "rgba(0, 190, 218, 0.75)";
 export default class GridAnimator {
     constructor() {
         this.stateManager = new StateManager();
+        this.isAutoPlaying = false;
+        this.isPaused = false;
+        this.currentStep = 0;
+        this.steps = [];
+        this.animationSpeed = 30; // milliseconds between steps
+        this.lastFrameTime = 0;
+        this.animationFrameId = null;
+        this.isActive = false;
     }
 
     async visualize(type) {
         this.state = this.stateManager.getState();
         this.nodes = this.stateManager.getNodes();
         this.nodesElements = this.stateManager.getNodeElements();
-        this.dynamicSleepTime = 500 / this.nodes.length;
 
         if (this.state || !this.nodes.length || !this.nodesElements.length)
             return;
 
         this.stateManager.setState(true);
+        this.isActive = true;
+        this.isAutoPlaying = true;
+        this.isPaused = false;
+        this.currentStep = 0;
+        this.lastFrameTime = 0;
+        this.showControlButtons();
 
         const algorithmsManager = new AlgorithmsManager(
             this.stateManager.getNodes()
         );
-        let steps = [];
 
         switch (type) {
             case "dijkstra":
-                steps = algorithmsManager.dijkstra();
+                this.steps = algorithmsManager.dijkstra();
                 break;
             case "astar":
-                steps = algorithmsManager.aStar();
+                this.steps = algorithmsManager.aStar();
                 break;
             case "dfs":
-                steps = algorithmsManager.depthFS();
+                this.steps = algorithmsManager.depthFS();
                 break;
             case "bfs":
-                steps = algorithmsManager.breadthFS();
-                break;
-            case "gol":
-                steps = algorithmsManager.gol();
+                this.steps = algorithmsManager.breadthFS();
                 break;
         }
 
-        for (const step of steps) {
-            console.count("step");
-            await this.performStep(step);
-        }
-
-        this.stateManager.setState(false);
+        this.updateControlButtons();
+        this.animate();
     }
 
-    async performStep(step) {
+    animate(currentTime = 0) {
+        if (!this.isActive) {
+            this.cleanup();
+            return;
+        }
+
+        // Only proceed if enough time has passed and we're auto-playing and not paused
+        if (this.isAutoPlaying && !this.isPaused && currentTime - this.lastFrameTime >= this.animationSpeed) {
+            if (this.currentStep < this.steps.length) {
+                this.executeStep(this.currentStep);
+                this.currentStep++;
+                this.updateControlButtons();
+                this.lastFrameTime = currentTime;
+            } else {
+                // Animation complete
+                this.cleanup();
+                return;
+            }
+        }
+
+        this.animationFrameId = requestAnimationFrame((time) => this.animate(time));
+    }
+
+    executeStep(stepIndex) {
+        if (stepIndex < 0 || stepIndex >= this.steps.length) return;
+        
+        const step = this.steps[stepIndex];
+        console.count("step");
+        this.performStep(step);
+    }
+
+    performStep(step) {
         const { type, indices } = step;
 
         if (type === "visited") {
-            await this.animateVisited(indices[0]);
-        } else if (type == "updated") {
-            await this.animateUpdated(indices[0]);
-        } else if (type === "golGeneration") {
-            await this.animateGolGeneration(step.generation);
+            this.animateVisited(indices[0]);
+        } else if (type === "updated") {
+            this.animateUpdated(indices[0]);
         } else if (type === "finish") {
-            await this.animateFinish(indices);
+            this.animateFinish(indices);
         }
     }
 
-    async animateVisited(indice) {
+    animateVisited(indice) {
         let node = this.nodes[indice];
         let nodeElement = this.nodesElements[indice];
 
         if (node.is_finish || node.is_start) return;
         nodeElement.style.backgroundColor = VISITED_COLOR;
-        await Utils.sleep(this.dynamicSleepTime);
     }
 
-    async animateGolGeneration(generation) {
-        for (let i = 0; i < generation.length; i++) {
-            const { type, index } = generation[i];
-            let node = this.nodes[index];
-            if (node.is_finish || node.is_start) continue;
-            let nodeElement = this.nodesElements[index];
-            Utils.sleep(this.dynamicSleepTime * i * 2).then(() => {
-                nodeElement.classList.toggle("node-wall", type != "kill");
-            });
-        }
-    }
-
-    async animateUpdated(indice) {
+    animateUpdated(indice) {
         let node = this.nodes[indice];
         let nodeElement = this.nodesElements[indice];
 
         if (!node || node.is_finish || node.is_start || node.is_wall) return;
         nodeElement.style.backgroundColor = CLOSED_COLOR;
     }
-    async animateFinish(indices) {
+
+    animateFinish(indices) {
+        let delay = 0;
         let originalStart = null;
-        let lastElement = null;
+        
         for (let i = 0; i < indices.length; i++) {
             const index = indices[i];
-            const node = this.nodesElements[index];
-            if (node.classList.contains("node-start")) {
-                originalStart = node;
+            const nodeElement = this.nodesElements[index];
+            
+            if (nodeElement.classList.contains("node-start")) {
+                originalStart = nodeElement;
             }
-            Utils.manipulateClasses(node, ["node-path"]);
-            if (!node.classList.contains("node-finish")) {
-                Utils.manipulateClasses(node, ["node-start"]);
-            }
-
-            if (lastElement) {
-                Utils.manipulateClasses(lastElement, [], ["node-start"]);
-            }
-
-            lastElement = node;
-            await Utils.sleep(this.dynamicSleepTime * 10);
+            
+            setTimeout(() => {
+                Utils.manipulateClasses(nodeElement, ["node-path"]);
+                if (!nodeElement.classList.contains("node-finish")) {
+                    Utils.manipulateClasses(nodeElement, ["node-start"]);
+                }
+                
+                // Remove start class from previous node
+                if (i > 0) {
+                    const prevNodeElement = this.nodesElements[indices[i-1]];
+                    if (!prevNodeElement.classList.contains("node-finish")) {
+                        Utils.manipulateClasses(prevNodeElement, [], ["node-start"]);
+                    }
+                }
+                
+                // Restore original start if this is the last step
+                if (i === indices.length - 1 && originalStart) {
+                    setTimeout(() => {
+                        Utils.manipulateClasses(nodeElement, [], ["node-start"]);
+                        Utils.manipulateClasses(originalStart, ["node-start"]);
+                    }, this.animationSpeed);
+                }
+            }, delay);
+            
+            delay += this.animationSpeed;
         }
+    }
 
-        if (lastElement && originalStart) {
-            await Utils.sleep(this.dynamicSleepTime * 10);
-            Utils.manipulateClasses(lastElement, [], ["node-start"]);
+    cleanup() {
+        this.isActive = false;
+        this.isAutoPlaying = false;
+        this.isPaused = false;
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+        this.hideControlButtons();
+        
+        // Use setTimeout to ensure state update happens after animation cleanup
+        setTimeout(() => {
+            this.stateManager.setState(false);
+        }, 0);
+    }
+
+    // Reset method for stopping animation
+    reset() {
+        this.isActive = false;
+        this.isAutoPlaying = false;
+        this.isPaused = false;
+        this.currentStep = 0;
+        this.steps = [];
+        
+        // Ensure animation frame is cancelled immediately
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+        
+        this.hideControlButtons();
+        
+        // Use setTimeout to ensure state update happens after current execution
+        setTimeout(() => {
+            this.stateManager.setState(false);
+        }, 0);
+    }
+
+    // Control button management
+    showControlButtons() {
+        const controlGroup = document.querySelector('.button-group.control-actions');
+        const pauseBtn = document.querySelector('.navbar-buttons-pause');
+        
+        if (controlGroup) {
+            controlGroup.style.display = 'flex';
+        }
+        
+        if (pauseBtn) {
+            const icon = pauseBtn.querySelector('i');
+            if (icon) {
+                icon.setAttribute('data-lucide', 'pause');
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+            pauseBtn.title = 'Pause';
+        }
+    }
+
+    hideControlButtons() {
+        const controlGroup = document.querySelector('.button-group.control-actions');
+        if (controlGroup) {
+            controlGroup.style.display = 'none';
+        }
+    }
+
+    updateControlButtons() {
+        // Use requestAnimationFrame to ensure DOM updates happen at the right time
+        requestAnimationFrame(() => {
+            const pauseBtn = document.querySelector('.navbar-buttons-pause');
+            const stepBackBtn = document.querySelector('.navbar-buttons-step-back');
+            const stepForwardBtn = document.querySelector('.navbar-buttons-step-forward');
+
+            if (pauseBtn) {
+                const icon = pauseBtn.querySelector('i');
+                if (this.isPaused || !this.isAutoPlaying) {
+                    pauseBtn.title = 'Resume';
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'play');
+                    }
+                } else if (this.isAutoPlaying) {
+                    pauseBtn.title = 'Pause';
+                    if (icon) {
+                        icon.setAttribute('data-lucide', 'pause');
+                    }
+                }
+                
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+
+            // Enable/disable step buttons based on current position and active state
+            if (stepBackBtn) {
+                const canStepBack = this.canStepBack();
+                stepBackBtn.disabled = !canStepBack;
+                console.log('Step back button disabled:', !canStepBack);
+            }
+            if (stepForwardBtn) {
+                const canStep = this.canStep();
+                stepForwardBtn.disabled = !canStep;
+                console.log('Step forward button disabled:', !canStep);
+            }
+        });
+    }
+
+    // Pause/Resume functionality
+    pause() {
+        if (!this.isActive) return;
+        this.isPaused = true;
+        this.isAutoPlaying = false;
+        this.updateControlButtons();
+    }
+
+    resume() {
+        if (!this.isActive) return;
+        this.isPaused = false;
+        this.isAutoPlaying = true;
+        this.updateControlButtons();
+    }
+
+    togglePauseResume() {
+        console.log('togglePauseResume called', {
+            isRunning: this.isRunning(),
+            isActive: this.isActive,
+            isPaused: this.isPaused,
+            isAutoPlaying: this.isAutoPlaying
+        });
+        
+        if (!this.isRunning()) return;
+        
+        if (this.isPaused) {
+            this.resume();
+        } else {
+            this.pause();
+        }
+    }
+
+    // Step functionality
+    stepForward() {
+        console.log('stepForward called', {
+            canStep: this.canStep(),
+            isActive: this.isActive,
+            currentStep: this.currentStep,
+            stepsLength: this.steps.length
+        });
+        
+        if (!this.canStep()) return;
+        
+        // Pause auto-playing when manually stepping
+        this.isAutoPlaying = false;
+        this.isPaused = true;
+        
+        this.executeStep(this.currentStep);
+        this.currentStep++;
+        this.updateControlButtons();
+    }
+
+    stepBack() {
+        console.log('stepBack called', {
+            canStepBack: this.canStepBack(),
+            isActive: this.isActive,
+            currentStep: this.currentStep
+        });
+        
+        if (!this.canStepBack()) return;
+        
+        // Pause auto-playing when manually stepping
+        this.isAutoPlaying = false;
+        this.isPaused = true;
+        
+        this.currentStep--;
+        this.undoStep(this.currentStep);
+        this.updateControlButtons();
+    }
+
+    undoStep(stepIndex) {
+        if (stepIndex < 0 || stepIndex >= this.steps.length) return;
+        
+        const step = this.steps[stepIndex];
+        const { type, indices } = step;
+
+        // Undo the visual effects of this step
+        if (type === "visited") {
+            this.undoVisited(indices[0]);
+        } else if (type === "updated") {
+            this.undoUpdated(indices[0]);
+        } else if (type === "finish") {
+            this.undoFinish(indices);
+        }
+    }
+
+    undoVisited(indice) {
+        let node = this.nodes[indice];
+        let nodeElement = this.nodesElements[indice];
+
+        if (node.is_finish || node.is_start) return;
+        nodeElement.style.backgroundColor = "";
+    }
+
+    undoUpdated(indice) {
+        let node = this.nodes[indice];
+        let nodeElement = this.nodesElements[indice];
+
+        if (!node || node.is_finish || node.is_start || node.is_wall) return;
+        nodeElement.style.backgroundColor = "";
+    }
+
+    undoFinish(indices) {
+        // Remove path visualization
+        for (let i = indices.length - 1; i >= 0; i--) {
+            const index = indices[i];
+            const nodeElement = this.nodesElements[index];
+            Utils.manipulateClasses(nodeElement, [], ["node-path", "node-start"]);
+        }
+        
+        // Restore original start node
+        if (indices.length > 0) {
+            const originalStartIndex = indices[0];
+            const originalStart = this.nodesElements[originalStartIndex];
             Utils.manipulateClasses(originalStart, ["node-start"]);
         }
+    }
+
+    // Speed control methods
+    setSpeed(speed) {
+        const speedMap = {
+            'slow': 100,
+            'normal': 30,
+            'fast': 5
+        };
+        this.animationSpeed = speedMap[speed] || 30;
+    }
+
+    setAnimationSpeed(speed) {
+        this.setSpeed(speed);
+    }
+
+    // Helper methods for better state management
+    isRunning() {
+        return this.isActive;
+    }
+
+    canStep() {
+        return this.isActive && this.currentStep < this.steps.length;
+    }
+
+    canStepBack() {
+        return this.isActive && this.currentStep > 0;
+    }
+
+    getProgress() {
+        if (!this.steps.length) return 0;
+        return Math.min(this.currentStep / this.steps.length, 1);
     }
 }

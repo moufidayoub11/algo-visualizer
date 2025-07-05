@@ -24,6 +24,9 @@ export default class StateManager {
         /** @type {HTMLElement[]} nodeElements */
         this.nodeElements = [];
 
+        /** @type {string} animationSpeed */
+        this.animationSpeed = 'normal';
+
         StateManager.instance = this;
     }
 
@@ -67,5 +70,12 @@ export default class StateManager {
     }
     getNodeElements() {
         return this.nodeElements;
+    }
+
+    setAnimationSpeed(speed) {
+        this.animationSpeed = speed;
+    }
+    getAnimationSpeed() {
+        return this.animationSpeed;
     }
 }

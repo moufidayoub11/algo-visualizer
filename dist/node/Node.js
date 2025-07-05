@@ -1,2 +1,2 @@
-export default class Node{constructor(s,i,t,h){this.row=s,this.col=i,this.is_start=t,this.is_finish=h,this.is_wall=!1,this.is_visited=!1,this.distance=1/0,this.f=1/0,this.prev=null}}
+export default class Node{constructor(s,i,t,h){this.row=s,this.col=i,this.is_start=t,this.is_finish=h,this.is_wall=!1,this.is_visited=!1,this.distance=1/0,this.f=1/0,this.g=1/0,this.in_open_set=!1,this.prev=null}}
 //# sourceMappingURL=Node.js.map

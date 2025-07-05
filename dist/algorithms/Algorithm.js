@@ -1,2 +1,2 @@
-import StateManager from"../StateManager.js";import Node from"../node/Node.js";export default class Algorithm{constructor(t){this.stateManager=new StateManager,this.nodes=t,this.steps=[]}solve(){return this.steps}}
+import StateManager from"../StateManager.js";import Node from"../node/Node.js";export default class Algorithm{constructor(t){this.stateManager=new StateManager,this.nodes=t,this.rows=this.stateManager.getRows(),this.cols=this.stateManager.getCols(),this.startNode=t.find((t=>t.is_start)),this.finishNode=t.find((t=>t.is_finish)),this.get_1d_index=(t,s)=>t*this.cols+s,this.steps=[]}solve(){return this.steps}}
 //# sourceMappingURL=Algorithm.js.map

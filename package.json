@@ -5,6 +5,11 @@
     "keywords": [],
     "author": "moufidayoub11",
     "license": "ISC",
+    "scripts": {
+        "build": "gulp build",
+        "dev": "gulp",
+        "start": "gulp"
+    },
     "dependencies": {
         "@babel/core": "^7.14.8",
         "@babel/preset-env": "^7.14.8",
