@@ -51,6 +51,12 @@ export default class GridAnimator {
             case "bfs":
                 this.steps = algorithmsManager.breadthFS();
                 break;
+            case "greedy":
+                this.steps = algorithmsManager.greedyBestFirst();
+                break;
+            case "jps":
+                this.steps = algorithmsManager.jumpPointSearch();
+                break;
         }
 
         this.updateControlButtons();

@@ -8,19 +8,19 @@
 	<!-- Primary Meta Tags -->
 	<title>PathFinder Visualizer - Interactive Pathfinding Algorithm Visualization</title>
 	<meta name="title" content="PathFinder Visualizer - Interactive Pathfinding Algorithm Visualization" />
-	<meta name="description" content="Visualize pathfinding algorithms like A*, Dijkstra, BFS, and DFS in real-time. Interactive grid-based pathfinding visualization tool with maze generation and step-by-step algorithm exploration." />
-	<meta name="keywords" content="pathfinding, algorithm visualization, A*, Dijkstra, BFS, DFS, maze generation, graph algorithms, interactive learning, computer science, data structures" />
+	<meta name="description" content="Visualize 6 pathfinding algorithms including A*, Dijkstra, BFS, DFS, Greedy Best-First, and Jump Point Search. Interactive grid-based pathfinding visualization tool with maze generation and step-by-step algorithm exploration." />
+	<meta name="keywords" content="pathfinding, algorithm visualization, A*, Dijkstra, BFS, DFS, greedy best-first search, jump point search, maze generation, graph algorithms, interactive learning, computer science, data structures" />
 	<meta name="author" content="PathFinder Visualizer" />
 	<meta name="robots" content="index, follow" />
 	
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="PathFinder Visualizer - Interactive Pathfinding Algorithm Visualization" />
-	<meta property="og:description" content="Visualize pathfinding algorithms like A*, Dijkstra, BFS, and DFS in real-time. Interactive grid-based pathfinding visualization tool with maze generation." />
+	<meta property="og:description" content="Visualize 6 pathfinding algorithms including A*, Dijkstra, BFS, DFS, Greedy Best-First, and Jump Point Search. Interactive grid-based pathfinding visualization tool with maze generation." />
 	<meta property="og:url" content="https://algo-visualizer-tau.vercel.app/" />
 	
 	<meta property="twitter:card" content="summary_large_image" />
 	<meta property="twitter:title" content="PathFinder Visualizer - Interactive Pathfinding Algorithm Visualization" />
-	<meta property="twitter:description" content="Visualize pathfinding algorithms like A*, Dijkstra, BFS, and DFS in real-time. Interactive grid-based pathfinding visualization tool." />
+	<meta property="twitter:description" content="Visualize 6 pathfinding algorithms including A*, Dijkstra, BFS, DFS, Greedy Best-First, and Jump Point Search. Interactive grid-based pathfinding visualization tool." />
 	
 	<link rel="canonical" href="https://algo-visualizer-tau.vercel.app/" />
 	
@@ -37,7 +37,7 @@
 		"@context": "https://schema.org",
 		"@type": "WebApplication",
 		"name": "PathFinder Visualizer",
-		"description": "Interactive pathfinding algorithm visualization tool supporting A*, Dijkstra, BFS, DFS algorithms with maze generation capabilities.",
+		"description": "Interactive pathfinding algorithm visualization tool supporting A*, Dijkstra, BFS, DFS, Greedy Best-First, and Jump Point Search algorithms with maze generation capabilities.",
 		"url": "https://algo-visualizer-tau.vercel.app/",
 		"applicationCategory": "EducationalApplication",
 		"operatingSystem": "Web Browser",
@@ -51,6 +51,8 @@
 			"Dijkstra's Algorithm Visualization", 
 			"Breadth-First Search (BFS) Visualization",
 			"Depth-First Search (DFS) Visualization",
+			"Greedy Best-First Search Visualization",
+			"Jump Point Search (JPS) Visualization",
 			"Interactive Maze Generation",
 			"Step-by-step Algorithm Control",
 			"Real-time Pathfinding Animation"
@@ -71,10 +73,18 @@
 					<label class="control-label">Algorithm</label>
 					<div class="select-wrapper">
 						<select id="algorithm-select">
+							<optgroup label="Optimal Algorithms">
 								<option value="astar">A* Search</option>
 								<option value="dijkstra">Dijkstra's Algorithm</option>
-								<option value="dfs">Depth-First Search</option>
+							</optgroup>
+							<optgroup label="Heuristic Algorithms">
+								<option value="greedy">Greedy Best-First Search</option>
+								<option value="jps">Jump Point Search</option>
+							</optgroup>
+							<optgroup label="Unweighted Algorithms">
 								<option value="bfs">Breadth-First Search</option>
+								<option value="dfs">Depth-First Search</option>
+							</optgroup>
 						</select>
 						<i data-lucide="chevron-down" class="select-icon"></i>
 					</div>
