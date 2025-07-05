@@ -120,7 +120,7 @@
     &-actions {
         display: flex;
         align-items: center;
-        gap: rem(12);
+        gap: rem(6);
 
         @include breakpoint-down(medium) {
             flex-wrap: wrap;
@@ -138,10 +138,6 @@
                 padding: rem(4);
                 backdrop-filter: blur(10px);
                 border: 1px solid rgba(59, 130, 246, 0.3);
-            }
-
-            &.primary-actions {
-                margin-right: rem(8);
             }
         }
 

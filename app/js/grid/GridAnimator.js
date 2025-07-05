@@ -68,8 +68,12 @@ export default class GridAnimator {
             if (this.currentStep < this.steps.length) {
                 this.executeStep(this.currentStep);
                 this.currentStep++;
-                this.updateControlButtons();
                 this.lastFrameTime = currentTime;
+                
+                // Only update buttons when we reach the end
+                if (this.currentStep >= this.steps.length) {
+                    this.updateControlButtons();
+                }
             } else {
                 // Animation complete
                 this.cleanup();
@@ -222,43 +226,32 @@ export default class GridAnimator {
     }
 
     updateControlButtons() {
-        // Use requestAnimationFrame to ensure DOM updates happen at the right time
-        requestAnimationFrame(() => {
-            const pauseBtn = document.querySelector('.navbar-buttons-pause');
-            const stepBackBtn = document.querySelector('.navbar-buttons-step-back');
-            const stepForwardBtn = document.querySelector('.navbar-buttons-step-forward');
+        const pauseBtn = document.querySelector('.navbar-buttons-pause');
+        const stepBackBtn = document.querySelector('.navbar-buttons-step-back');
+        const stepForwardBtn = document.querySelector('.navbar-buttons-step-forward');
 
-            if (pauseBtn) {
-                const icon = pauseBtn.querySelector('i');
-                if (this.isPaused || !this.isAutoPlaying) {
-                    pauseBtn.title = 'Resume';
-                    if (icon) {
-                        icon.setAttribute('data-lucide', 'play');
-                    }
-                } else if (this.isAutoPlaying) {
-                    pauseBtn.title = 'Pause';
-                    if (icon) {
-                        icon.setAttribute('data-lucide', 'pause');
-                    }
-                }
-                
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
+        if (pauseBtn) {
+            if (this.isPaused || !this.isAutoPlaying) {
+                pauseBtn.title = 'Resume';
+                pauseBtn.innerHTML = '<i data-lucide="play"></i>';
+            } else if (this.isAutoPlaying) {
+                pauseBtn.title = 'Pause';
+                pauseBtn.innerHTML = '<i data-lucide="pause"></i>';
             }
+            
+            // Recreate the icon after setting innerHTML
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
 
-            // Enable/disable step buttons based on current position and active state
-            if (stepBackBtn) {
-                const canStepBack = this.canStepBack();
-                stepBackBtn.disabled = !canStepBack;
-                console.log('Step back button disabled:', !canStepBack);
-            }
-            if (stepForwardBtn) {
-                const canStep = this.canStep();
-                stepForwardBtn.disabled = !canStep;
-                console.log('Step forward button disabled:', !canStep);
-            }
-        });
+        // Enable/disable step buttons based on current position and active state
+        if (stepBackBtn) {
+            stepBackBtn.disabled = !this.canStepBack();
+        }
+        if (stepForwardBtn) {
+            stepForwardBtn.disabled = !this.canStep();
+        }
     }
 
     // Pause/Resume functionality
@@ -277,13 +270,6 @@ export default class GridAnimator {
     }
 
     togglePauseResume() {
-        console.log('togglePauseResume called', {
-            isRunning: this.isRunning(),
-            isActive: this.isActive,
-            isPaused: this.isPaused,
-            isAutoPlaying: this.isAutoPlaying
-        });
-        
         if (!this.isRunning()) return;
         
         if (this.isPaused) {
@@ -295,13 +281,6 @@ export default class GridAnimator {
 
     // Step functionality
     stepForward() {
-        console.log('stepForward called', {
-            canStep: this.canStep(),
-            isActive: this.isActive,
-            currentStep: this.currentStep,
-            stepsLength: this.steps.length
-        });
-        
         if (!this.canStep()) return;
         
         // Pause auto-playing when manually stepping
@@ -310,16 +289,14 @@ export default class GridAnimator {
         
         this.executeStep(this.currentStep);
         this.currentStep++;
-        this.updateControlButtons();
+        
+        // Only update buttons if we've reached the end or beginning
+        if (this.currentStep >= this.steps.length || this.currentStep === 1) {
+            this.updateControlButtons();
+        }
     }
 
     stepBack() {
-        console.log('stepBack called', {
-            canStepBack: this.canStepBack(),
-            isActive: this.isActive,
-            currentStep: this.currentStep
-        });
-        
         if (!this.canStepBack()) return;
         
         // Pause auto-playing when manually stepping
@@ -328,7 +305,11 @@ export default class GridAnimator {
         
         this.currentStep--;
         this.undoStep(this.currentStep);
-        this.updateControlButtons();
+        
+        // Only update buttons if we've reached the beginning or moved from end
+        if (this.currentStep <= 0 || this.currentStep === this.steps.length - 1) {
+            this.updateControlButtons();
+        }
     }
 
     undoStep(stepIndex) {

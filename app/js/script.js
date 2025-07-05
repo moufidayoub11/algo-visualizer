@@ -114,19 +114,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Single pause/resume button functionality
     pauseButton.addEventListener("click", (e) => {
         e.preventDefault();
-        console.log('Pause button clicked');
         grid.gridAnimator.togglePauseResume();
     });
 
     stepBackButton.addEventListener("click", (e) => {
         e.preventDefault();
-        console.log('Step back button clicked');
         grid.gridAnimator.stepBack();
     });
 
     stepForwardButton.addEventListener("click", (e) => {
         e.preventDefault();
-        console.log('Step forward button clicked');
         grid.gridAnimator.stepForward();
     });
 
