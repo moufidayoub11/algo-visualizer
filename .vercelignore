@@ -1,5 +1,8 @@
 node_modules
 .git
 app/
+gulpfile.js
+package.json
+package-lock.json
 *.md
 .gitignore
